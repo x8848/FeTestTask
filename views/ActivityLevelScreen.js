@@ -24,14 +24,14 @@ export default class ActivityLevelScreen extends Component {
 
                 <ImageBackground source={require('../assets/clouds.png')} style={{ width: '100%', height: 400 }}>
                     <ScrollPicker
-                        dataSource={[1, 2, 3, 4, 5]}
-                        selectedIndex={3}
+                        dataSource={Object.keys(Activity)}
+                        selectedIndex={ACTIVITY_DEFAULT_VALUE-1}
                         itemHeight={80}
                         wrapperHeight={400}
                         wrapperColor={'transparent'}
                         highlightColor={'grey'}
-                        renderItem={(data, index, isSelected) => { return (<View><Text>{data}</Text></View>) }}
-                        onValueChange={(data, selectedIndex) => { this.setState({ selected: data }) }} />
+                        renderItem={(data) => { return (<View><Text>{data}</Text></View>) }}
+                        onValueChange={(data) => { this.setState({ selected: data }) }} />
                 </ImageBackground>
 
                 <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
