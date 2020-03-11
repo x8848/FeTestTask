@@ -1,5 +1,5 @@
 import React, { useState, Component } from 'react';
-import { StyleSheet, TouchableOpacity, View, Image, Text, ImageBackground } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, ImageBackground } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CheckBox } from 'react-native-elements'
@@ -70,7 +70,7 @@ class HomeScreen extends Component {
           </View>
         </View>
         <TouchableOpacity disabled={!this.check()} style={!this.check() ? styles.buttonDisabled : styles.buttonEnabled}
-          onPress={() => this.props.navigation.navigate('DueDate', {}, { goal: this.state })}>
+          onPress={() => this.props.navigation.navigate('DueDate', { goals: this.state })}>
           <Text style={{ fontSize: 20, color: 'white' }} >Continue</Text>
         </TouchableOpacity>
       </ImageBackground>
@@ -79,8 +79,8 @@ class HomeScreen extends Component {
 }
 
 const DueDateScreen = (props) => {
-
   const [date, setDate] = useState(new Date());
+  const { goals } = props.route.params;
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -101,7 +101,7 @@ const DueDateScreen = (props) => {
         </View>
       </View>
       <TouchableOpacity style={styles.buttonEnabled}
-        onPress={() => props.navigation.navigate('ActivityLevel', { goal: props.goal, dueDate: date })} >
+        onPress={() => props.navigation.navigate('ActivityLevel', { goals: goals, date: date })} >
         <Text style={{ fontSize: 20, color: 'white' }} >Continue</Text>
       </TouchableOpacity>
     </ImageBackground>
@@ -115,6 +115,8 @@ class ActivityLevelScreen extends Component {
 
   render() {
     const { selected } = this.state;
+    const { goals, date } = this.props.route.params;
+
     return (
       <ImageBackground style={styles.backgroundImage}>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -138,8 +140,8 @@ class ActivityLevelScreen extends Component {
           <Text style={{ marginTop: 60, marginBottom: 20, fontSize: 20 }}>{Activity[`${selected}`]}</Text>
         </View>
         <TouchableOpacity style={styles.buttonEnabled}
-          onPress={() => this.props.navigation.navigate('Success', { goal: this.props.goal, dueDate: this.props.dueDate, activity: selected })}>
-          <Text style={{ fontSize: 20, color: 'white' }} >Continue</Text>
+          onPress={() => this.props.navigation.navigate('Success', { goals: goals, date: date, level: selected })}>
+          <Text style={{ fontSize: 20, color: 'white' }}>Continue</Text>
         </TouchableOpacity>
       </ImageBackground>
     );
@@ -148,9 +150,24 @@ class ActivityLevelScreen extends Component {
 
 class SuccessScreen extends Component {
   render() {
+    const { goals, date, level } = this.props.route.params;
+
+    const printGoal = () => {
+      let list = []
+      Object.keys(goals).forEach(key => {
+        if (goals[key]) {
+          list.push(Goal[key])
+        }
+      })
+      return list.toString();
+    }
+
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>{`${JSON.stringify(this.props.goal)}`}</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 40}}>
+        <Text>Well Done !!!</Text>
+        <Text>Goals: {printGoal()}</Text>
+        <Text>Due date: {JSON.stringify(date)}</Text>
+        <Text>Activity Level: {level} - {Activity[level]}</Text>
       </View>
     )
   }
